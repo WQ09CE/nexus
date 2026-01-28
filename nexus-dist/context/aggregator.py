@@ -27,8 +27,25 @@ class TaskResult:
 class ResultAggregator:
     """结果聚合器"""
 
-    def __init__(self):
+    # Default character limits
+    DEFAULT_MAX_CHARS = 2000
+    DEFAULT_COMPACT_MAX_CHARS = 500
+
+    def __init__(
+        self,
+        default_max_chars: int = DEFAULT_MAX_CHARS,
+        default_compact_max_chars: int = DEFAULT_COMPACT_MAX_CHARS,
+    ):
+        """
+        初始化结果聚合器
+
+        Args:
+            default_max_chars: 默认的常形态最大字符数 (默认 2000)
+            default_compact_max_chars: 默认的缩形态最大字符数 (默认 500)
+        """
         self.results: List[TaskResult] = []
+        self._default_max_chars = default_max_chars
+        self._default_compact_max_chars = default_compact_max_chars
 
     def add_result(self, result: TaskResult) -> None:
         """
@@ -39,16 +56,18 @@ class ResultAggregator:
         """
         self.results.append(result)
 
-    def aggregate(self, max_chars: int = 2000) -> str:
+    def aggregate(self, max_chars: int = None) -> str:
         """
-        聚合为常形态 (结构化输出，默认 2000 字符)
+        聚合为常形态 (结构化输出)
 
         Args:
-            max_chars: 最大字符数限制
+            max_chars: 最大字符数限制。如果为 None，使用初始化时设置的默认值
 
         Returns:
             格式化的聚合结果
         """
+        if max_chars is None:
+            max_chars = self._default_max_chars
         if not self.results:
             return "无任务结果"
 
@@ -83,16 +102,18 @@ class ResultAggregator:
 
         return result_text
 
-    def get_compact_summary(self, max_chars: int = 500) -> str:
+    def get_compact_summary(self, max_chars: int = None) -> str:
         """
-        聚合为缩形态 (极简摘要，默认 500 字符)
+        聚合为缩形态 (极简摘要)
 
         Args:
-            max_chars: 最大字符数限制
+            max_chars: 最大字符数限制。如果为 None，使用初始化时设置的默认值
 
         Returns:
             极简摘要
         """
+        if max_chars is None:
+            max_chars = self._default_compact_max_chars
         if not self.results:
             return "无任务结果"
 
