@@ -13,8 +13,8 @@ Usage:
 
 from .event_bus import EventBus
 from .state_manager import StateManager
-from .scheduler import Scheduler
+from .scheduler import NexusPipeline
 from .artifact_manager import ArtifactManager
 
 __version__ = "2.0.0-mvp"
-__all__ = ["EventBus", "StateManager", "Scheduler", "ArtifactManager"]
+__all__ = ["EventBus", "StateManager", "NexusPipeline", "ArtifactManager"]
