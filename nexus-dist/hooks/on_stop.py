@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Wukong on_stop Hook - Stop Event Handler (Task Completion)
+Nexus on_stop Hook - Stop Event Handler (Task Completion)
 
 This hook is triggered when a task graph completes (all nodes done).
 It performs:
@@ -13,7 +13,7 @@ Usage:
     This hook is called by the runtime when a Stop event is emitted.
     It can also be invoked directly:
 
-    python3 on_stop.py --graph-id tg_abc123 --artifacts-dir ~/.wukong/artifacts
+    python3 on_stop.py --graph-id tg_abc123 --artifacts-dir ~/.nexus/artifacts
 """
 
 import argparse
@@ -34,9 +34,9 @@ if str(runtime_dir) not in sys.path:
 
 
 # Default paths
-DEFAULT_WUKONG_DIR = Path.home() / ".wukong"
-DEFAULT_ARTIFACTS_DIR = DEFAULT_WUKONG_DIR / "artifacts"
-DEFAULT_ANCHORS_DIR = DEFAULT_WUKONG_DIR / "anchors"
+DEFAULT_NEXUS_DIR = Path.home() / ".nexus"
+DEFAULT_ARTIFACTS_DIR = DEFAULT_NEXUS_DIR / "artifacts"
+DEFAULT_ANCHORS_DIR = DEFAULT_NEXUS_DIR / "anchors"
 
 
 # Anchor extraction patterns

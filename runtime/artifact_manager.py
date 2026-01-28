@@ -1,5 +1,5 @@
 """
-Wukong ArtifactManager - Output artifact archival
+Nexus ArtifactManager - Output artifact archival
 
 Manages archival and retrieval of subagent outputs.
 Artifacts are stored in a structured directory hierarchy.
@@ -29,7 +29,7 @@ class ArtifactManager:
         └── index.json                # Global index
 
     Example:
-        manager = ArtifactManager(Path("~/.wukong/artifacts"))
+        manager = ArtifactManager(Path("~/.nexus/artifacts"))
         artifact_path = manager.archive_output(
             graph_id="tg_abc123",
             node_id="eye_explore",

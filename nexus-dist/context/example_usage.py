@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-示例：如何使用 Wukong 上下文优化模块
+示例：如何使用 Nexus 上下文优化模块
 
 运行:
-  cd /path/to/wukong
-  python3 -m wukong-dist.context.example_usage
+  cd /path/to/nexus
+  python3 -m nexus-dist.context.example_usage
 
 或:
-  cd /path/to/wukong/wukong-dist
+  cd /path/to/nexus/nexus-dist
   python3 -m context.example_usage
 """
 
@@ -156,7 +156,7 @@ def example_3_result_aggregation():
 
 def main():
     """运行所有示例"""
-    print("\nWukong 上下文优化模块使用示例\n")
+    print("\nNexus 上下文优化模块使用示例\n")
 
     example_1_parallel_snapshot()
     example_2_importance_marking()

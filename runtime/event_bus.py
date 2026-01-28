@@ -1,5 +1,5 @@
 """
-Wukong EventBus - Event-driven communication via events.jsonl
+Nexus EventBus - Event-driven communication via events.jsonl
 
 Events are appended to a JSONL file for durability and auditability.
 Each event follows the event.schema.json specification.
@@ -41,7 +41,7 @@ EVENT_SOURCES = {"user", "scheduler", "subagent", "validator", "system"}
 
 @dataclass
 class Event:
-    """Represents a single event in the Wukong system."""
+    """Represents a single event in the Nexus system."""
 
     event_id: str
     type: str
@@ -95,7 +95,7 @@ class EventBus:
     for durability and auditability.
 
     Example:
-        bus = EventBus(Path("~/.wukong/events.jsonl"))
+        bus = EventBus(Path("~/.nexus/events.jsonl"))
         event_id = bus.write_event(
             "UserPromptSubmit",
             {"prompt": "Fix the bug"},

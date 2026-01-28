@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
+      - name: Run static tests
+        run: |
+          python -m pytest tests/test_static.py -v
+
+  shellcheck:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install shellcheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+
+      - name: Lint shell scripts
+        run: |
+          if [ -f "install.sh" ]; then
+            shellcheck install.sh
+          fi
+          if [ -f "scripts/ci-check.sh" ]; then
+            shellcheck scripts/ci-check.sh
+          fi
+
+  install-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Test installation
+        run: |
+          if [ -f "install.sh" ]; then
+            TEMP_DIR=$(mktemp -d)
+            bash install.sh "$TEMP_DIR" <<< "n"
+            # Verify key files exist
+            if [ -f "$TEMP_DIR/.claude/rules/00-nexus-core.md" ]; then
+              echo "Installation test passed"
+            else
+              echo "Installation test failed: core rule file not found"
+              exit 1
+            fi
+            rm -rf "$TEMP_DIR"
+          else
+            echo "install.sh not found, skipping"
+          fi

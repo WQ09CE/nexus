@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Wukong Self-Check - Environment validation for Wukong 2.0
+Nexus Self-Check - Environment validation for Nexus 2.0
 
 Usage:
-    python3 ~/.wukong/runtime/selfcheck.py
+    python3 ~/.nexus/runtime/selfcheck.py
 
-This script validates the Wukong installation and configuration,
+This script validates the Nexus installation and configuration,
 checking for required files, modules, and CLI functionality.
 """
 
@@ -27,9 +27,9 @@ def get_home() -> Path:
     return Path.home()
 
 
-def get_wukong_dir() -> Path:
-    """Get Wukong runtime directory."""
-    return get_home() / ".wukong"
+def get_nexus_dir() -> Path:
+    """Get Nexus runtime directory."""
+    return get_home() / ".nexus"
 
 
 def get_claude_dir() -> Path:
@@ -64,7 +64,7 @@ def check_files_exist(directory: Path, filenames: List[str]) -> Tuple[int, int]:
 def print_header() -> None:
     """Print the self-check header."""
     print("=" * 55)
-    print(" Wukong 2.0 Self-Check (\u609f\u7a7a\u81ea\u68c0)")
+    print(" Nexus 2.0 Self-Check")
     print("=" * 55)
     print()
 
@@ -123,10 +123,10 @@ def check_rules() -> bool:
 def check_hooks() -> bool:
     """Check hook files."""
     print()
-    print("3. Hooks (~/.wukong/hooks/)")
+    print("3. Hooks (~/.nexus/hooks/)")
 
-    hooks_dir = get_wukong_dir() / "hooks"
-    hook_files = ["hui-extract.py", "on_subagent_stop.py", "on_stop.py"]
+    hooks_dir = get_nexus_dir() / "hooks"
+    hook_files = ["reflection-extract.py", "on_subagent_stop.py", "on_stop.py"]
 
     found, missing = check_files_exist(hooks_dir, hook_files)
     total = found + missing
@@ -142,9 +142,9 @@ def check_hooks() -> bool:
 def check_runtime_modules() -> bool:
     """Check Runtime 2.0 modules."""
     print()
-    print("4. Runtime 2.0 (~/.wukong/runtime/)")
+    print("4. Runtime 2.0 (~/.nexus/runtime/)")
 
-    runtime_dir = get_wukong_dir() / "runtime"
+    runtime_dir = get_nexus_dir() / "runtime"
     runtime_files = [
         "cli.py",
         "event_bus.py",
@@ -171,9 +171,9 @@ def check_runtime_modules() -> bool:
 def check_dag_templates() -> bool:
     """Check DAG templates."""
     print()
-    print("5. DAG Templates (~/.wukong/runtime/templates/)")
+    print("5. DAG Templates (~/.nexus/runtime/templates/)")
 
-    templates_dir = get_wukong_dir() / "runtime" / "templates"
+    templates_dir = get_nexus_dir() / "runtime" / "templates"
     template_files = [
         "fix_track.json",
         "feature_track.json",
@@ -194,9 +194,9 @@ def check_dag_templates() -> bool:
 def check_context_module() -> bool:
     """Check context module."""
     print()
-    print("6. Context (~/.wukong/context/)")
+    print("6. Context (~/.nexus/context/)")
 
-    context_dir = get_wukong_dir() / "context"
+    context_dir = get_nexus_dir() / "context"
     snapshot_file = context_dir / "snapshot.py"
 
     if snapshot_file.exists():
@@ -212,7 +212,7 @@ def check_runtime_imports() -> bool:
     print()
     print("7. Testing Runtime 2.0 CLI...")
 
-    runtime_dir = get_wukong_dir() / "runtime"
+    runtime_dir = get_nexus_dir() / "runtime"
 
     # Add runtime dir to path temporarily
     str_runtime_dir = str(runtime_dir)
@@ -253,7 +253,7 @@ def check_cli_commands() -> bool:
     print()
     print("8. Testing CLI commands...")
 
-    cli_path = get_wukong_dir() / "runtime" / "cli.py"
+    cli_path = get_nexus_dir() / "runtime" / "cli.py"
 
     if not cli_path.exists():
         print(f"   {ICON_WARN} CLI not found")

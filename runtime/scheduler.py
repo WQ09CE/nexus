@@ -1,5 +1,5 @@
 """
-Wukong Scheduler - DAG-based task graph scheduling
+Nexus Scheduler - DAG-based task graph scheduling
 
 Handles loading track templates, instantiating task graphs,
 and determining which nodes are ready for execution based on DAG dependencies.
@@ -34,7 +34,7 @@ class NodeDependency:
 
 class Scheduler:
     """
-    Scheduler for Wukong task graph execution.
+    Scheduler for Nexus task graph execution.
 
     Responsibilities:
     - Load track templates from the templates directory
@@ -43,7 +43,7 @@ class Scheduler:
     - Update node statuses
 
     Example:
-        scheduler = Scheduler(Path("~/.wukong/templates"))
+        scheduler = Scheduler(Path("~/.nexus/templates"))
         template = scheduler.load_template("fix")
         graph = scheduler.instantiate_graph(template, "Fix the login bug")
         ready_nodes = scheduler.get_ready_nodes(graph)

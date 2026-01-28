@@ -1,5 +1,5 @@
 """
-Wukong Visualizer - Task execution progress visualization.
+Nexus Visualizer - Task execution progress visualization.
 
 Provides visual representations of task graph execution progress:
 - Terminal-friendly progress display
@@ -142,10 +142,10 @@ class Visualizer:
             state_file: Path to state.json
             events_file: Path to events.jsonl
         """
-        wukong_dir = Path.home() / ".wukong"
-        self.taskgraph_file = Path(taskgraph_file) if taskgraph_file else wukong_dir / "taskgraph.json"
-        self.state_file = Path(state_file) if state_file else wukong_dir / "state.json"
-        self.events_file = Path(events_file) if events_file else wukong_dir / "events.jsonl"
+        nexus_dir = Path.home() / ".nexus"
+        self.taskgraph_file = Path(taskgraph_file) if taskgraph_file else nexus_dir / "taskgraph.json"
+        self.state_file = Path(state_file) if state_file else nexus_dir / "state.json"
+        self.events_file = Path(events_file) if events_file else nexus_dir / "events.jsonl"
 
     def _read_taskgraph(self) -> Optional[Dict[str, Any]]:
         """Read the current task graph."""

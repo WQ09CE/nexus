@@ -4,7 +4,7 @@
 在 Claude Code 自动压缩上下文前触发，提取并保存关键信息。
 
 使用方法:
-1. 将此脚本放到 ~/.wukong/hooks/hui-extract.py
+1. 将此脚本放到 ~/.nexus/hooks/reflection-extract.py
 2. 在 .claude/settings.json 中配置:
    {
      "hooks": {
@@ -12,7 +12,7 @@
          "matcher": "auto",
          "hooks": [{
            "type": "command",
-           "command": "python3 ~/.wukong/hooks/hui-extract.py"
+           "command": "python3 ~/.nexus/hooks/reflection-extract.py"
          }]
        }]
      }
@@ -42,7 +42,7 @@ from typing import Any
 
 def get_user_context_dir() -> Path:
     """获取用户级别的上下文根目录"""
-    return Path.home() / '.wukong' / 'context'
+    return Path.home() / '.nexus' / 'context'
 
 
 def get_project_name(cwd: str) -> str:
@@ -360,13 +360,13 @@ def compress_avatar_output_from_env(output: str) -> str:
     从环境变量读取分身类型并压缩输出。
 
     环境变量:
-    - WUKONG_COMPRESS_AVATAR: 设为 1 启用压缩
-    - WUKONG_AVATAR_TYPE: 分身类型
+    - NEXUS_COMPRESS_AVATAR: 设为 1 启用压缩
+    - NEXUS_AVATAR_TYPE: 分身类型
     """
-    if os.environ.get('WUKONG_COMPRESS_AVATAR') != '1':
+    if os.environ.get('NEXUS_COMPRESS_AVATAR') != '1':
         return output
 
-    avatar_type = os.environ.get('WUKONG_AVATAR_TYPE', 'default')
+    avatar_type = os.environ.get('NEXUS_AVATAR_TYPE', 'default')
     return compress_avatar_output(output, avatar_type)
 
 
@@ -562,7 +562,7 @@ def get_message_content(msg: dict) -> str:
 
 # Patterns that indicate system instructions or internal content
 SKIP_CONTENT_PATTERNS = [
-    r'^#\s*Wukong Multi-Agent',          # Wukong system instructions
+    r'^#\s*Nexus Multi-Agent',           # Nexus system instructions
     r'^#\s*Jenkins Build Skill',         # Skill file content
     r'^#\s*Explorer Skill',              # Skill file content
     r'^#\s*Implementer Skill',           # Skill file content
@@ -571,14 +571,14 @@ SKIP_CONTENT_PATTERNS = [
     r'^#\s*Code Reviewer Skill',         # Skill file content
     r'^#\s*Requirements Analyst Skill',  # Skill file content
     r'^You are now operating as',        # Identity declaration
-    r'^You are \*\*Wukong',              # Identity declaration
+    r'^You are \*\*Nexus',               # Identity declaration
     r'^<command-message>',               # Command tags
     r'^<command-name>',                  # Command tags
     r'^\s*<thinking>',                   # Internal thinking tags
     r'^ARGUMENTS:',                      # Skill arguments
-    r'^## Activation \(轻量启动\)',      # Wukong activation section
-    r'^## Your Identity',                # Wukong identity section
-    r'^## Six Roots Avatar System',      # Wukong system section
+    r'^## Activation \(轻量启动\)',      # Nexus activation section
+    r'^## Your Identity',                # Nexus identity section
+    r'^## Six Roots Avatar System',      # Nexus system section
 ]
 
 # Tags to clean from content
@@ -1888,7 +1888,7 @@ def introspect(scope: str = 'today', project: str = None) -> str:
     """
     if scope == 'session':
         # 当前会话内观 - 返回提示信息
-        return "当前会话内观请使用 `/wukong 内观` 命令触发 PreCompact Hook。"
+        return "当前会话内观请使用 `/nexus 内观` 命令触发 PreCompact Hook。"
 
     sessions = query_sessions_by_date(scope, project)
 
@@ -1970,7 +1970,7 @@ def save_context(cwd: str, compact_context: str, session_id: str):
     保存上下文到用户级别目录。
 
     目录结构:
-    ~/.wukong/context/
+    ~/.nexus/context/
     ├── active/{session_id}/compact.md      # 活跃会话（按 session 隔离）
     └── sessions/{project}-{timestamp}-{session[:8]}/  # 历史存档
     """
@@ -2008,12 +2008,12 @@ def output_to_claude(compact_context: str, candidates: list[dict]):
     """输出给 Claude (会被注入到压缩后的上下文)"""
     print("## [慧] PreCompact 提取完成")
     print()
-    print("已保存关键上下文到 `~/.wukong/context/active/{session}/compact.md`")
+    print("已保存关键上下文到 `~/.nexus/context/active/{session}/compact.md`")
     print()
     if candidates:
         print(f"识别到 {len(candidates)} 个候选锚点，待后续门槛检查。")
     print()
-    print("如需恢复详细信息，读取 `~/.wukong/context/sessions/` 下对应文件。")
+    print("如需恢复详细信息，读取 `~/.nexus/context/sessions/` 下对应文件。")
 
 
 def main():
@@ -2022,15 +2022,15 @@ def main():
 
     支持两种模式:
     1. PreCompact Hook 模式: 从 stdin 读取 hook 输入，提取上下文
-    2. 分身输出压缩模式: 通过环境变量 WUKONG_COMPRESS_AVATAR=1 触发
+    2. 分身输出压缩模式: 通过环境变量 NEXUS_COMPRESS_AVATAR=1 触发
 
     环境变量:
-    - WUKONG_COMPRESS_AVATAR: 设为 1 启用分身输出压缩模式
-    - WUKONG_AVATAR_TYPE: 分身类型 (眼/耳/鼻/舌/身/意 或英文别名)
-    - WUKONG_AVATAR_OUTPUT: 要压缩的输出内容 (或从 stdin 读取)
+    - NEXUS_COMPRESS_AVATAR: 设为 1 启用分身输出压缩模式
+    - NEXUS_AVATAR_TYPE: 分身类型 (眼/耳/鼻/舌/身/意 或英文别名)
+    - NEXUS_AVATAR_OUTPUT: 要压缩的输出内容 (或从 stdin 读取)
     """
     # 检查是否为分身输出压缩模式
-    if os.environ.get('WUKONG_COMPRESS_AVATAR') == '1':
+    if os.environ.get('NEXUS_COMPRESS_AVATAR') == '1':
         _run_avatar_compress_mode()
         return
 
@@ -2040,10 +2040,10 @@ def main():
 
 def _run_avatar_compress_mode():
     """分身输出压缩模式"""
-    avatar_type = os.environ.get('WUKONG_AVATAR_TYPE', 'default')
+    avatar_type = os.environ.get('NEXUS_AVATAR_TYPE', 'default')
 
     # 从环境变量或 stdin 读取输出内容
-    avatar_output = os.environ.get('WUKONG_AVATAR_OUTPUT', '')
+    avatar_output = os.environ.get('NEXUS_AVATAR_OUTPUT', '')
     if not avatar_output:
         avatar_output = sys.stdin.read()
 
@@ -2058,7 +2058,7 @@ def _run_avatar_compress_mode():
     print(compressed)
 
     # 记录日志
-    log_path = Path.home() / '.wukong' / 'hooks' / 'hui-compress.log'
+    log_path = Path.home() / '.nexus' / 'hooks' / 'reflection-compress.log'
     with open(log_path, 'a', encoding='utf-8') as log:
         log.write(f"\n--- {datetime.now().isoformat()} ---\n")
         log.write(f"Avatar: {avatar_type}\n")
@@ -2073,7 +2073,7 @@ def _run_precompact_mode():
     hook_input = read_hook_input()
 
     # Debug: 记录到日志文件
-    log_path = Path.home() / '.wukong' / 'hooks' / 'hui-extract.log'
+    log_path = Path.home() / '.nexus' / 'hooks' / 'reflection-extract.log'
     with open(log_path, 'a', encoding='utf-8') as log:
         log.write(f"\n--- {datetime.now().isoformat()} ---\n")
         log.write(f"Input keys: {list(hook_input.keys())}\n")
@@ -2212,7 +2212,7 @@ def output_to_claude_with_recovery(
     # 3. 标准输出
     print("## [慧] PreCompact 提取完成")
     print()
-    print("已保存关键上下文到 `~/.wukong/context/active/{session}/compact.md`")
+    print("已保存关键上下文到 `~/.nexus/context/active/{session}/compact.md`")
     print()
 
     if candidates:
@@ -2255,7 +2255,7 @@ def output_to_claude_with_recovery(
         print(f"\n### [恢复] 检测到 {len(session_errors)} 个会话问题 (已处理)")
 
     print()
-    print("如需恢复详细信息，读取 `~/.wukong/context/sessions/` 下对应文件。")
+    print("如需恢复详细信息，读取 `~/.nexus/context/sessions/` 下对应文件。")
 
 
 # ============================================================
@@ -2289,7 +2289,7 @@ def detect_incomplete_tasks(messages: list[dict], cwd: str) -> dict:
     检查策略：
     1. 检查最后几条消息是否有完成标记
     2. 检查是否有明确的未完成标记
-    3. 检查 .wukong/context/current/ 下是否有未完成任务记录
+    3. 检查 .nexus/context/current/ 下是否有未完成任务记录
 
     Args:
         messages: 对话消息列表
@@ -2332,7 +2332,7 @@ def detect_incomplete_tasks(messages: list[dict], cwd: str) -> dict:
         result['reason'] = f'Found incomplete markers: {incomplete_found}'
 
     # 3. 检查本地任务状态文件
-    state_file = Path(cwd) / '.wukong' / 'context' / 'current' / 'task-state.json'
+    state_file = Path(cwd) / '.nexus' / 'context' / 'current' / 'task-state.json'
     if state_file.exists():
         try:
             with open(state_file, 'r', encoding='utf-8') as f:
@@ -2372,7 +2372,7 @@ def generate_continuation_prompt(
         续期提示字符串
     """
     prompt_lines = [
-        "## [WUKONG CONTINUATION]",
+        "## [NEXUS CONTINUATION]",
         "",
         f"**迭代**: [{iteration + 1}/{max_iterations}]",
         "",
@@ -2405,7 +2405,7 @@ def save_task_state(cwd: str, state: dict):
         cwd: 当前工作目录
         state: 任务状态字典
     """
-    state_dir = Path(cwd) / '.wukong' / 'context' / 'current'
+    state_dir = Path(cwd) / '.nexus' / 'context' / 'current'
     state_dir.mkdir(parents=True, exist_ok=True)
 
     state_file = state_dir / 'task-state.json'
@@ -2417,7 +2417,7 @@ def save_task_state(cwd: str, state: dict):
 
 def clear_task_state(cwd: str):
     """清除任务状态文件（任务完成时调用）"""
-    state_file = Path(cwd) / '.wukong' / 'context' / 'current' / 'task-state.json'
+    state_file = Path(cwd) / '.nexus' / 'context' / 'current' / 'task-state.json'
     if state_file.exists():
         state_file.unlink()
 
@@ -2682,7 +2682,7 @@ def generate_stage_prompt(stage: str, usage_ratio: float) -> str:
 **提醒**: 上下文窗口已使用 {percentage}%，但仍有充足空间。
 - ✅ 不要因此仓促行动
 - ✅ 继续高质量完成当前任务
-- ⚠️ 考虑在合适时机执行 `/wukong 压缩`
+- 考虑在合适时机执行 `/nexus 压缩`
 """
 
     elif stage == 'preemptive':
@@ -2698,7 +2698,7 @@ def generate_stage_prompt(stage: str, usage_ratio: float) -> str:
 
 **你应该**:
 - 完成当前正在进行的任务
-- 然后执行 `/wukong 压缩` 保存进度
+- 然后执行 `/nexus 压缩` 保存进度
 """
 
     elif stage == 'emergency':
@@ -3063,7 +3063,7 @@ def save_recovery_state(cwd: str, recovery_result: dict):
         cwd: 当前工作目录
         recovery_result: 恢复结果字典
     """
-    state_dir = Path(cwd) / '.wukong' / 'context' / 'current'
+    state_dir = Path(cwd) / '.nexus' / 'context' / 'current'
     state_dir.mkdir(parents=True, exist_ok=True)
 
     state_file = state_dir / 'recovery-state.json'

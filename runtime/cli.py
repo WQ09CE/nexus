@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 """
-Wukong Runtime CLI - Command line interface for Wukong 2.0 Runtime
+Nexus Runtime CLI - Command line interface for Nexus 2.0 Runtime
 
 Usage:
-    python3 ~/.wukong/runtime/cli.py analyze "修复登录bug"
-    python3 ~/.wukong/runtime/cli.py create --track fix "修复登录bug"
-    python3 ~/.wukong/runtime/cli.py status
-    python3 ~/.wukong/runtime/cli.py progress
-    python3 ~/.wukong/runtime/cli.py next
-    python3 ~/.wukong/runtime/cli.py complete <node_id> --summary "..."
-    python3 ~/.wukong/runtime/cli.py fail <node_id> --reason "..."
-    python3 ~/.wukong/runtime/cli.py abort
-    python3 ~/.wukong/runtime/cli.py resume
+    python3 ~/.nexus/runtime/cli.py analyze "修复登录bug"
+    python3 ~/.nexus/runtime/cli.py create --track fix "修复登录bug"
+    python3 ~/.nexus/runtime/cli.py status
+    python3 ~/.nexus/runtime/cli.py progress
+    python3 ~/.nexus/runtime/cli.py next
+    python3 ~/.nexus/runtime/cli.py complete <node_id> --summary "..."
+    python3 ~/.nexus/runtime/cli.py fail <node_id> --reason "..."
+    python3 ~/.nexus/runtime/cli.py abort
+    python3 ~/.nexus/runtime/cli.py resume
 """
 
 import argparse
@@ -37,13 +37,13 @@ from visualizer import Visualizer, get_default_visualizer
 
 
 # Default paths
-DEFAULT_WUKONG_DIR = Path.home() / ".wukong"
-DEFAULT_STATE_FILE = DEFAULT_WUKONG_DIR / "state.json"
-DEFAULT_EVENTS_FILE = DEFAULT_WUKONG_DIR / "events.jsonl"
-DEFAULT_TASKGRAPH_FILE = DEFAULT_WUKONG_DIR / "taskgraph.json"
-DEFAULT_TEMPLATES_DIR = DEFAULT_WUKONG_DIR / "runtime" / "templates"
-DEFAULT_ARTIFACTS_DIR = DEFAULT_WUKONG_DIR / "artifacts"
-DEFAULT_ANCHORS_DIR = DEFAULT_WUKONG_DIR / "anchors"
+DEFAULT_NEXUS_DIR = Path.home() / ".nexus"
+DEFAULT_STATE_FILE = DEFAULT_NEXUS_DIR / "state.json"
+DEFAULT_EVENTS_FILE = DEFAULT_NEXUS_DIR / "events.jsonl"
+DEFAULT_TASKGRAPH_FILE = DEFAULT_NEXUS_DIR / "taskgraph.json"
+DEFAULT_TEMPLATES_DIR = DEFAULT_NEXUS_DIR / "runtime" / "templates"
+DEFAULT_ARTIFACTS_DIR = DEFAULT_NEXUS_DIR / "artifacts"
+DEFAULT_ANCHORS_DIR = DEFAULT_NEXUS_DIR / "anchors"
 
 
 # Track keywords for analysis
@@ -1162,7 +1162,7 @@ def anchor_relevant(task: str, project: Optional[str] = None, max_results: int =
 def main():
     """Main entry point."""
     parser = argparse.ArgumentParser(
-        description="Wukong Runtime CLI - Manage task graph execution",
+        description="Nexus Runtime CLI - Manage task graph execution",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

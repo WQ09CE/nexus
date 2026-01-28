@@ -1,5 +1,5 @@
 """
-Wukong Metrics - Cost and duration tracking for task graph execution.
+Nexus Metrics - Cost and duration tracking for task graph execution.
 
 Collects metrics from events.jsonl and state.json to provide:
 - Per-node timing and cost estimation
@@ -452,9 +452,9 @@ class MetricsCollector:
 
 def get_default_collector() -> MetricsCollector:
     """Get a MetricsCollector with default paths."""
-    wukong_dir = Path.home() / ".wukong"
+    nexus_dir = Path.home() / ".nexus"
     return MetricsCollector(
-        events_file=wukong_dir / "events.jsonl",
-        state_file=wukong_dir / "state.json",
-        taskgraph_file=wukong_dir / "taskgraph.json",
+        events_file=nexus_dir / "events.jsonl",
+        state_file=nexus_dir / "state.json",
+        taskgraph_file=nexus_dir / "taskgraph.json",
     )

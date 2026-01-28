@@ -1,5 +1,5 @@
 """
-Wukong AnchorManager - Anchor management for cross-session knowledge persistence
+Nexus AnchorManager - Anchor management for cross-session knowledge persistence
 
 Anchors are persistent pieces of knowledge that survive across sessions:
 - Architecture decisions (ADR)
@@ -37,7 +37,7 @@ class AnchorManager:
             └── anchors.json
 
     Example:
-        manager = AnchorManager(Path("~/.wukong/anchors"))
+        manager = AnchorManager(Path("~/.nexus/anchors"))
         candidate_id = manager.add_candidate({
             "type": "decision",
             "title": "Use JWT for authentication",

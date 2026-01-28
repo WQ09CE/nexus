@@ -1,5 +1,5 @@
 """
-Wukong StateManager - Atomic state management via state.json
+Nexus StateManager - Atomic state management via state.json
 
 Provides safe, atomic read/write operations for the runtime state.
 Uses write-to-temp + rename pattern for crash safety.
@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 
 @dataclass
 class RuntimeState:
-    """Represents the current runtime state of Wukong."""
+    """Represents the current runtime state of Nexus."""
 
     # Current task graph ID being executed
     current_graph_id: Optional[str] = None
@@ -90,7 +90,7 @@ class StateManager:
     - This ensures the state file is never corrupted mid-write
 
     Example:
-        manager = StateManager(Path("~/.wukong/state.json"))
+        manager = StateManager(Path("~/.nexus/state.json"))
         state = manager.get_state()
         state["status"] = "running"
         manager.set_state(state)

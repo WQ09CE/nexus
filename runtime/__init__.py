@@ -1,14 +1,14 @@
 """
-Wukong 2.0 Runtime MVP
+Nexus 2.0 Runtime MVP
 
-This module provides the core runtime components for the Wukong multi-agent system:
+This module provides the core runtime components for the Nexus multi-agent system:
 - EventBus: Event-driven communication via events.jsonl
 - StateManager: Atomic state management via state.json
 - Scheduler: DAG-based task graph scheduling
 - ArtifactManager: Output artifact archival
 
 Usage:
-    from wukong_runtime import EventBus, StateManager, Scheduler, ArtifactManager
+    from nexus_runtime import EventBus, StateManager, Scheduler, ArtifactManager
 """
 
 from .event_bus import EventBus
