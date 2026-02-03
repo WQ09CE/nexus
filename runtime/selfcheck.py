@@ -1,19 +1,17 @@
 #!/usr/bin/env python3
 """
-Nexus Self-Check - Environment validation for Nexus 2.0
+Nexus Self-Check - Environment validation for Nexus
 
 Usage:
     python3 ~/.nexus/runtime/selfcheck.py
 
-This script validates the Nexus installation and configuration,
-checking for required files, modules, and CLI functionality.
+This script validates the Nexus installation and configuration.
 """
 
-import importlib.util
 import os
 import sys
 from pathlib import Path
-from typing import Tuple, List, Optional
+from typing import Tuple, List
 
 
 # Status icons
@@ -63,224 +61,79 @@ def check_files_exist(directory: Path, filenames: List[str]) -> Tuple[int, int]:
 
 def print_header() -> None:
     """Print the self-check header."""
-    print("=" * 55)
-    print(" Nexus 2.0 Self-Check")
-    print("=" * 55)
+    print("=" * 45)
+    print(" Nexus Self-Check")
+    print("=" * 45)
     print()
 
 
 def print_footer() -> None:
     """Print the self-check footer."""
     print()
-    print("=" * 55)
+    print("=" * 45)
     print(" Self-Check Complete")
-    print("=" * 55)
-
-
-def check_skills() -> bool:
-    """Check skill files (project-level or global)."""
-    print("1. Skills")
-    cwd = Path.cwd()
-
-    # Check project-level first
-    project_skills = count_files(cwd / ".claude" / "skills")
-    if project_skills > 0:
-        print(f"   {ICON_OK} Found {project_skills} skill files (project: .claude/skills/)")
-        return True
-
-    # Check global
-    global_skills = count_files(get_claude_dir() / "skills")
-    if global_skills > 0:
-        print(f"   {ICON_OK} Found {global_skills} skill files (global: ~/.claude/skills/)")
-        return True
-
-    print(f"   {ICON_FAIL} No skill files found")
-    return False
+    print("=" * 45)
 
 
 def check_rules() -> bool:
-    """Check rule files (project-level or global)."""
-    print()
-    print("2. Rules")
+    """Check rule files."""
+    print("1. Rules (~/.claude/rules/)")
     cwd = Path.cwd()
 
     # Check project-level first
     project_rules = count_files(cwd / ".claude" / "rules")
     if project_rules > 0:
-        print(f"   {ICON_OK} Found {project_rules} rule files (project: .claude/rules/)")
+        print(f"   {ICON_OK} Found {project_rules} rule files (project)")
         return True
 
     # Check global
     global_rules = count_files(get_claude_dir() / "rules")
     if global_rules > 0:
-        print(f"   {ICON_OK} Found {global_rules} rule files (global: ~/.claude/rules/)")
+        print(f"   {ICON_OK} Found {global_rules} rule files (global)")
         return True
 
-    print(f"   {ICON_FAIL} No rule files found (run install.sh in project)")
+    print(f"   {ICON_FAIL} No rule files found (run install.sh)")
     return False
 
 
-def check_hooks() -> bool:
-    """Check hook files."""
+def check_agents() -> bool:
+    """Check agent files."""
     print()
-    print("3. Hooks (~/.nexus/hooks/)")
+    print("2. Agents (~/.claude/agents/)")
 
-    hooks_dir = get_nexus_dir() / "hooks"
-    hook_files = ["reflection-extract.py", "on_subagent_stop.py", "on_stop.py"]
+    agents_dir = get_claude_dir() / "agents"
+    agent_files = ["eye.md", "body.md", "mind.md"]
 
-    found, missing = check_files_exist(hooks_dir, hook_files)
+    found, missing = check_files_exist(agents_dir, agent_files)
     total = found + missing
 
     if missing == 0:
-        print(f"   {ICON_OK} All {found} hooks present")
+        print(f"   {ICON_OK} All {found} agents present")
         return True
     else:
-        print(f"   {ICON_WARN} {found}/{total} hooks present")
+        print(f"   {ICON_WARN} {found}/{total} agents present")
+        for agent in agent_files:
+            if not (agents_dir / agent).exists():
+                print(f"      Missing: {agent}")
         return False
 
 
-def check_runtime_modules() -> bool:
-    """Check Runtime 2.0 modules."""
+def check_commands() -> bool:
+    """Check command files."""
     print()
-    print("4. Runtime 2.0 (~/.nexus/runtime/)")
+    print("3. Commands (~/.claude/commands/)")
 
-    runtime_dir = get_nexus_dir() / "runtime"
-    runtime_files = [
-        "cli.py",
-        "event_bus.py",
-        "state_manager.py",
-        "scheduler.py",
-        "artifact_manager.py",
-        "anchor_manager.py",
-        "metrics.py",
-        "visualizer.py",
-        "health_monitor.py",
-    ]
+    commands_dir = get_claude_dir() / "commands"
+    command_files = ["nexus.md"]
 
-    found, missing = check_files_exist(runtime_dir, runtime_files)
+    found, missing = check_files_exist(commands_dir, command_files)
     total = found + missing
 
     if missing == 0:
-        print(f"   {ICON_OK} All {found} runtime modules present")
+        print(f"   {ICON_OK} All {found} commands present")
         return True
     else:
-        print(f"   {ICON_WARN} {found}/{total} modules present")
-        return False
-
-
-def check_dag_templates() -> bool:
-    """Check DAG templates."""
-    print()
-    print("5. DAG Templates (~/.nexus/runtime/templates/)")
-
-    templates_dir = get_nexus_dir() / "runtime" / "templates"
-    template_files = [
-        "fix_track.json",
-        "feature_track.json",
-        "refactor_track.json",
-        "direct_track.json",
-    ]
-
-    found, _ = check_files_exist(templates_dir, template_files)
-
-    if found == 4:
-        print(f"   {ICON_OK} All 4 track templates present")
-        return True
-    else:
-        print(f"   {ICON_WARN} {found}/4 templates present")
-        return False
-
-
-def check_context_module() -> bool:
-    """Check context module."""
-    print()
-    print("6. Context (~/.nexus/context/)")
-
-    context_dir = get_nexus_dir() / "context"
-    snapshot_file = context_dir / "snapshot.py"
-
-    if snapshot_file.exists():
-        print(f"   {ICON_OK} Context module present")
-        return True
-    else:
-        print(f"   {ICON_WARN} Context module missing")
-        return False
-
-
-def check_runtime_imports() -> bool:
-    """Test Runtime 2.0 module imports."""
-    print()
-    print("7. Testing Runtime 2.0 CLI...")
-
-    runtime_dir = get_nexus_dir() / "runtime"
-
-    # Add runtime dir to path temporarily
-    str_runtime_dir = str(runtime_dir)
-    if str_runtime_dir not in sys.path:
-        sys.path.insert(0, str_runtime_dir)
-
-    modules_to_test = [
-        "event_bus",
-        "state_manager",
-        "scheduler",
-        "artifact_manager",
-        "anchor_manager",
-        "metrics",
-    ]
-
-    try:
-        for module_name in modules_to_test:
-            module_path = runtime_dir / f"{module_name}.py"
-            if module_path.exists():
-                spec = importlib.util.spec_from_file_location(module_name, module_path)
-                if spec and spec.loader:
-                    module = importlib.util.module_from_spec(spec)
-                    spec.loader.exec_module(module)
-
-        print(f"   {ICON_OK} All runtime modules importable")
-        return True
-
-    except ImportError as e:
-        print(f"   {ICON_FAIL} Import error: {e}")
-        return False
-    except Exception as e:
-        print(f"   {ICON_FAIL} Error: {e}")
-        return False
-
-
-def check_cli_commands() -> bool:
-    """Test Runtime CLI commands."""
-    print()
-    print("8. Testing CLI commands...")
-
-    cli_path = get_nexus_dir() / "runtime" / "cli.py"
-
-    if not cli_path.exists():
-        print(f"   {ICON_WARN} CLI not found")
-        return False
-
-    try:
-        import subprocess
-
-        result = subprocess.run(
-            [sys.executable, str(cli_path), "analyze", "Fix login bug"],
-            capture_output=True,
-            text=True,
-            timeout=10,
-        )
-
-        if result.returncode == 0:
-            print(f"   {ICON_OK} CLI analyze command works")
-            return True
-        else:
-            print(f"   {ICON_WARN} CLI analyze command failed")
-            return False
-
-    except subprocess.TimeoutExpired:
-        print(f"   {ICON_WARN} CLI command timed out")
-        return False
-    except Exception as e:
-        print(f"   {ICON_FAIL} CLI error: {e}")
+        print(f"   {ICON_WARN} {found}/{total} commands present")
         return False
 
 
@@ -296,19 +149,14 @@ def main() -> int:
     results = []
 
     # Run all checks
-    results.append(("Skills", check_skills()))
     results.append(("Rules", check_rules()))
-    results.append(("Hooks", check_hooks()))
-    results.append(("Runtime", check_runtime_modules()))
-    results.append(("Templates", check_dag_templates()))
-    results.append(("Context", check_context_module()))
-    results.append(("Imports", check_runtime_imports()))
-    results.append(("CLI", check_cli_commands()))
+    results.append(("Agents", check_agents()))
+    results.append(("Commands", check_commands()))
 
     print_footer()
 
-    # Critical checks: Skills and Rules
-    critical_checks = ["Skills", "Rules"]
+    # Critical checks: Rules and Agents
+    critical_checks = ["Rules", "Agents"]
     critical_failed = any(
         not passed for name, passed in results if name in critical_checks
     )
